@@ -64,8 +64,12 @@ type errorReply struct {
 // InspectRequest represents inspect_request.
 // See http://jupyter-client.readthedocs.io/en/latest/messaging.html#introspection
 type InspectRequest struct {
-	Code      string `json:"code"`
-	CursorPos int    `json:"cursor_pos"`
+	// The code context in which introspection is requested
+	// this may be up to an entire multiline cell.
+	Code string `json:"code"`
+	// The cursor position within 'code' (in unicode characters) where inspection
+	// is requested
+	CursorPos int `json:"cursor_pos"`
 	// The level of detail desired.  In IPython, the default (0) is equivalent to typing
 	// 'x?' at the prompt, 1 is equivalent to 'x??'.
 	// The difference is up to kernels, but in IPython level 1 includes the source code
@@ -160,11 +164,20 @@ type IsCompleteRequest struct {
 	Code string `json:"code"`
 }
 
+type IsCompleteStatus string
+
+const (
+	StatusComplete   IsCompleteStatus = "complete"
+	StatusIncomplete IsCompleteStatus = "incomplete"
+	StatusInvalid    IsCompleteStatus = "invalid"
+	StatusUnknown    IsCompleteStatus = "unkwown"
+)
+
 // IsCompleteReply represents is_complete_reply.
 // http://jupyter-client.readthedocs.io/en/latest/messaging.html#code-completeness
 type IsCompleteReply struct {
 	// One of 'complete', 'incomplete', 'invalid', 'unknown'
-	Status string `json:"status"`
+	Status IsCompleteStatus `json:"status"`
 	// If status is 'incomplete', indent should contain the characters to use
 	// to indent the next line. This is only a hint: frontends may ignore it
 	// and use their own autoindentation rules. For other statuses, this
