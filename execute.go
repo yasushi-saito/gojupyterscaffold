@@ -101,7 +101,7 @@ loop:
 			result := q.handlers.HandleExecuteRequest(
 				cur,
 				exReq,
-				func(name, text string) {
+				func(name Stream, text string) {
 					q.iopub.sendStream(name, text, item.req)
 				}, func(data *DisplayData, update bool) {
 					q.iopub.sendDisplayData(data, item.req, update)

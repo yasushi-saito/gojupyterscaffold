@@ -2,6 +2,13 @@ package gojupyterscaffold
 
 import "context"
 
+type Stream string
+
+const (
+	Stdout Stream = "stdout"
+	Stderr Stream = "stderr"
+)
+
 // RequestHandlers is the interface to define handlers to handle Jupyter messages.
 // Except for HandleGoFmt, all mesages are defined in
 // http://jupyter-client.readthedocs.io/en/latest/messaging.html
@@ -12,7 +19,7 @@ type RequestHandlers interface {
 	// (or update_display_data if update is true) to the client.
 	HandleExecuteRequest(ctx context.Context,
 		req *ExecuteRequest,
-		writeStream func(name, text string),
+		writeStream func(name Stream, text string),
 		writeDisplayData func(data *DisplayData, update bool)) *ExecuteResult
 	HandleComplete(req *CompleteRequest) *CompleteReply
 	HandleInspect(req *InspectRequest) *InspectReply
@@ -107,10 +114,23 @@ type CompleteReply struct {
 	Status string `json:"status"`
 }
 
+type Status string
+
+// Values for ExecuteResult.
+const (
+	// StatusOK is one of the allowed values for ExecuteResult.Status.
+	StatusOK = "ok"
+	// StatusError is one of the allowed values for ExecuteResult.Status.
+	StatusError = "error"
+	// StatusAbort is one of the allowed values for ExecuteResult.Status.
+	StatusAbort = "abort"
+)
+
 // ExecuteResult represents execute_result.
 // See http://jupyter-client.readthedocs.io/en/latest/messaging.html#execution-results
 type ExecuteResult struct {
-	Status         string `json:"status"`
+	// One of "ok", "error", or "abort"
+	Status         Status `json:"status"`
 	ExecutionCount int    `json:"execution_count,omitempty"`
 	// data and metadata are omitted because they are covered by DisplayData.
 }

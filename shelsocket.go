@@ -114,7 +114,7 @@ func (s *iopubSocket) publishStatus(status string, parent *message) error {
 }
 
 // http://jupyter-client.readthedocs.io/en/latest/messaging.html#streams-stdout-stderr-etc
-func (s *iopubSocket) sendStream(name, text string, parent *message) {
+func (s *iopubSocket) sendStream(name Stream, text string, parent *message) {
 	var msg message
 	msg.Identity = [][]byte{[]byte("stream")}
 	msg.Header.MsgType = "stream"
@@ -127,7 +127,7 @@ func (s *iopubSocket) sendStream(name, text string, parent *message) {
 		Name string `json:"name"`
 		Text string `json:"text"`
 	}{
-		Name: name,
+		Name: string(name),
 		Text: text,
 	}
 	if err := s.sendMessage(&msg); err != nil {
