@@ -81,7 +81,7 @@ type InspectRequest struct {
 // See http://jupyter-client.readthedocs.io/en/latest/messaging.html#introspection
 type InspectReply struct {
 	// 'ok' if the request succeeded or 'error', with error information as in all other replies.
-	Status string `json:"status"`
+	Status Status `json:"status"`
 	// found should be true if an object was found, false otherwise
 	Found bool `json:"found"`
 	// data can be empty if nothing is found
