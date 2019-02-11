@@ -13,11 +13,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/grailbio/base/log"
 	zmq "github.com/pebbe/zmq4"
 )
 
@@ -203,23 +203,23 @@ func (s *Server) Loop() {
 	<-execDone
 
 	if err := s.shell.notifyLoopEnd(); err != nil {
-		log.Error.Printf("Failed to notify the loop end to shell socket: %v", err)
+		log.Printf("Failed to notify the loop end to shell socket: %v", err)
 	}
 	if err := s.control.notifyLoopEnd(); err != nil {
-		log.Error.Printf("Failed to notify the loop end to control socket: %v", err)
+		log.Printf("Failed to notify the loop end to control socket: %v", err)
 	}
 	// Wait loop ends
 	<-sockDone
 	<-sockDone
 
 	if err := s.iopub.close(); err != nil {
-		log.Error.Printf("Failed to close iopub socket: %v", err)
+		log.Printf("Failed to close iopub socket: %v", err)
 	}
 	if err := s.shell.close(); err != nil {
-		log.Error.Printf("Failed to close shell socket: %v", err)
+		log.Printf("Failed to close shell socket: %v", err)
 	}
 	if err := s.control.close(); err != nil {
-		log.Error.Printf("Failed to close control socket: %v", err)
+		log.Printf("Failed to close control socket: %v", err)
 	}
 
 	// TODO: Support stdin.

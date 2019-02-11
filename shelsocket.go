@@ -3,10 +3,10 @@ package gojupyterscaffold
 import (
 	"context"
 	"errors"
+	"log"
 	"fmt"
 	"sync"
 
-	"github.com/grailbio/base/log"
 	zmq "github.com/pebbe/zmq4"
 )
 
@@ -131,7 +131,7 @@ func (s *iopubSocket) sendStream(name Stream, text string, parent *message) {
 		Text: text,
 	}
 	if err := s.sendMessage(&msg); err != nil {
-		log.Error.Printf("Failed to send stream: %v", err)
+		log.Printf("Failed to send stream: %v", err)
 	}
 }
 
@@ -158,7 +158,7 @@ func (s *iopubSocket) sendDisplayData(data *DisplayData, parent *message, update
 	msg.ParentHeader = parent.Header
 	msg.Content = data
 	if err := s.sendMessage(&msg); err != nil {
-		log.Error.Printf("Failed to send stream: %v", err)
+		log.Printf("Failed to send stream: %v", err)
 	}
 }
 
@@ -271,14 +271,14 @@ loop:
 			continue
 		}
 		if err != nil {
-			log.Error.Printf("Poll on %s socket failed: %v", s.name, err)
+			log.Printf("Poll on %s socket failed: %v", s.name, err)
 			continue
 		}
 		for _, p := range polled {
 			switch p.Socket {
 			case s.socket:
 				if err := s.handleMessages(); err != nil {
-					log.Error.Printf("Failed to handle a message on %s socket: %v", s.name, err)
+					log.Printf("Failed to handle a message on %s socket: %v", s.name, err)
 				}
 			case s.resultPull:
 				err := s.handleResultPull()
@@ -323,7 +323,7 @@ func (s *shellSocket) handleMessages() error {
 	switch typ := msg.Header.MsgType; typ {
 	case "kernel_info_request":
 		if err := s.sendKernelInfo(&msg); err != nil {
-			log.Error.Printf("Failed to handle kernel_info_request: %v", err)
+			log.Printf("Failed to handle kernel_info_request: %v", err)
 		}
 	case "shutdown_request":
 		log.Print("received shutdown_request.")

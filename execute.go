@@ -11,8 +11,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
-	"github.com/grailbio/base/log"
+	"log"
 )
 
 const executeQueueSize = 1 << 8
@@ -110,7 +109,7 @@ loop:
 			res.Header.MsgType = "execute_reply"
 			res.Content = &result
 			if err := item.sock.pushResult(res); err != nil {
-				log.Error.Printf("Failed to send execute_reply: %v", err)
+				log.Printf("Failed to send execute_reply: %v", err)
 			}
 			if result.Status == "error" {
 				return errStatusError
@@ -119,7 +118,7 @@ loop:
 		}, item.req)
 		if err != nil {
 			if err != errStatusError {
-				log.Error.Printf("Failed to handle a execute_request: %v", err)
+				log.Printf("Failed to handle a execute_request: %v", err)
 			}
 			if exReq.StopOnError {
 				q.abortQueue()
